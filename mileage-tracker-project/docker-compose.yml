@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: 121212
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  carfueltracker:
+    build: ./carfueltracker
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydb
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: 121212
+    depends_on:
+      - postgres
+
+  ibss-fuel-tracker-form:
+    build: ./mileage-tracker-form
+    ports:
+      - "3000:3000"
+
+  ibss-admin-panel:
+    build: ./admin-panel
+    ports:
+      - "3001:3001"
+
+volumes:
+  postgres_data:
+
+
+
